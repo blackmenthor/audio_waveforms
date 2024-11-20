@@ -1,3 +1,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
   package="com.simform.audio_waveforms">
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <!--
+    android.permission.CAPTURE_AUDIO_HOTWORD,
+    android.permission.CAPTURE_AUDIO_OUTPUT,
+    android.permission.CAPTURE_MEDIA_OUTPUT,
+    android.permission.CAPTURE_TUNER_AUDIO_INPUT,
+    android.permission.CAPTURE_VOICE_COMMUNICATION_OUTPUT,
+    android.permission.RECORD_AUDIO
+    -->
 </manifest>

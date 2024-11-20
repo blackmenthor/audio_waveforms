@@ -2,6 +2,7 @@ package com.simform.audio_waveforms
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaMetadataRetriever
 import android.media.MediaMetadataRetriever.METADATA_KEY_DURATION
@@ -13,7 +14,6 @@ import androidx.core.app.ActivityCompat
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.PluginRegistry
 import java.io.IOException
-import java.lang.IllegalStateException
 import kotlin.math.log10
 
 private const val LOG_TAG = "AudioWaveforms"
@@ -64,7 +64,7 @@ class AudioRecorder : PluginRegistry.RequestPermissionsResultListener {
         }
     }
 
-    fun stopRecording(result: MethodChannel.Result, recorder: MediaRecorder?, path: String) {
+    fun stopRecording(result: MethodChannel.Result, recorder: MediaRecorder?, path: String, activity: Activity?) {
         try {
             val audioInfoArrayList = ArrayList<String?>()
 
@@ -84,6 +84,8 @@ class AudioRecorder : PluginRegistry.RequestPermissionsResultListener {
                 reset()
                 release()
             }
+
+            activity?.stopService(Intent(activity, AudioRecorderService::class.java))
 
             result.success(audioInfoArrayList)
         } catch (e: IllegalStateException) {
@@ -105,10 +107,21 @@ class AudioRecorder : PluginRegistry.RequestPermissionsResultListener {
         return "-1"
     }
 
-    fun startRecorder(result: MethodChannel.Result, recorder: MediaRecorder?, useLegacy: Boolean) {
+    fun startRecorder(result: MethodChannel.Result, recorder: MediaRecorder?, useLegacy: Boolean, activity: Activity?) {
         try {
+            if (ActivityCompat.checkSelfPermission(
+                    activity!!,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                throw java.lang.IllegalStateException()
+            }
             useLegacyNormalization = useLegacy
             recorder?.start()
+
+            val intent = Intent(activity, AudioRecorderService::class.java)
+            intent.putExtra("ACTIVITY_NAME", "${activity.packageName}.${activity.localClassName}")
+            activity.startService(intent)
             result.success(true)
         } catch (e: IllegalStateException) {
             Log.e(LOG_TAG, "Failed to start recording")

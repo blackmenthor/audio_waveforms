@@ -58,10 +58,10 @@ class AudioWaveformsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
             Constants.startRecording -> {
                 val useLegacyNormalization =
                     (call.argument(Constants.useLegacyNormalization) as Boolean?) ?: false
-                audioRecorder.startRecorder(result, recorder, useLegacyNormalization)
+                audioRecorder.startRecorder(result, recorder, useLegacyNormalization, activity)
             }
             Constants.stopRecording -> {
-                audioRecorder.stopRecording(result, recorder, path!!)
+                audioRecorder.stopRecording(result, recorder, path!!, activity)
                 recorder = null
             }
             Constants.pauseRecording -> audioRecorder.pauseRecording(result, recorder)

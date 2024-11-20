@@ -8,6 +8,18 @@ class AudioWaveformsInterface {
   static const MethodChannel _methodChannel =
       MethodChannel(Constants.methodChannelName);
 
+  void checkNotifPermission() async {
+    var status = await Permission.notification.status;
+    if (status.isDenied) {
+      // We haven't asked for permission yet or the permission has been denied before, but not permanently.
+      await Permission.notification.request();
+    }
+
+    if (status.isDenied) {
+      throw Exception('Permission to post notification is denied!');
+    }
+  }
+
   ///platform call to start recording
   Future<bool> record({
     required int audioFormat,
@@ -17,6 +29,8 @@ class AudioWaveformsInterface {
     bool useLegacyNormalization = false,
     bool overrideAudioSession = true,
   }) async {
+    checkNotifPermission();
+
     final isRecording = await _methodChannel.invokeMethod(
       Constants.startRecording,
       Platform.isIOS
