@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'dart:math' show max;
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '/src/base/utils.dart';
 import 'player_controller.dart';
@@ -157,6 +158,18 @@ class RecorderController extends ChangeNotifier {
   /// Reported duration is in [milliseconds].
   ValueNotifier<int> get currentScrolledDuration => _currentScrolledDuration;
 
+  void checkNotifPermission() async {
+    var status = await Permission.notification.status;
+    if (status.isDenied) {
+      // We haven't asked for permission yet or the permission has been denied before, but not permanently.
+      await Permission.notification.request();
+    }
+
+    if (status.isDenied) {
+      throw Exception('Permission to post notification is denied!');
+    }
+  }
+
   /// Calls platform to start recording.
   ///
   /// First, it checks for microphone permission, if permission
@@ -191,6 +204,9 @@ class RecorderController extends ChangeNotifier {
   }) async {
     if (!_recorderState.isRecording) {
       await checkPermission();
+      print('[ONGGO] TEST!');
+
+      checkNotifPermission();
       if (_hasPermission) {
         if (Platform.isAndroid && _recorderState.isStopped) {
           await _initRecorder(
