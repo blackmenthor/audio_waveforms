@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSUserNotificationUsageDescription</key>
+	<string>Allow notifications to inform you of recording status.</string>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -27,7 +29,7 @@
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app requires permission to access the media library.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires Mic's permission.</string>
+	<string>This app requires Mic&apos;s permission.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

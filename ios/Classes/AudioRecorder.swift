@@ -1,4 +1,5 @@
 import AVFoundation
+import UserNotifications
 import Accelerate
 
 public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
@@ -53,14 +54,26 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            var content = UNMutableNotificationContent()
-             content.title = "Message1"
-                     content.subtitle = "subtitle"
-                     content.body = "body"
-                     content.sound = UNNotificationSound.default
-            var request = UNNotificationRequest(identifier: UUID().uuidString , content: content, trigger: trigger)
-            UNUserNotificationCenter.current().add(request)
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { granted, error in
+                if granted {
+                    print("Notifications authorized")
+                } else {
+                    print("Notifications not authorized")
+                }
+            }
+            
+            let content = UNMutableNotificationContent()
+            content.title = "Recording in Progress"
+            content.body = "Your app is currently recording audio."
+            content.sound = UNNotificationSound.default
+            
+            let request = UNNotificationRequest(identifier: "RecordingNotification", content: content, trigger: nil)
+            
+            UNUserNotificationCenter.current().add(request) { error in
+                if error != nil {
+                    print("Error scheduling notification: \(error!.localizedDescription)")
+                }
+            }
             
             result(true)
         } catch {
@@ -70,6 +83,8 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
     
     public func stopRecording(_ result: @escaping FlutterResult) {
         audioRecorder?.stop()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        
         if(audioUrl != nil) {
             let asset = AVURLAsset(url:  audioUrl!)
             if #available(iOS 15.0, *) {
