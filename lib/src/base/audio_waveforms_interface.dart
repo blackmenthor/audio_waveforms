@@ -29,7 +29,9 @@ class AudioWaveformsInterface {
     bool useLegacyNormalization = false,
     bool overrideAudioSession = true,
   }) async {
-    checkNotifPermission();
+    if (Platform.isAndroid) {
+      checkNotifPermission();
+    }
 
     final isRecording = await _methodChannel.invokeMethod(
       Constants.startRecording,

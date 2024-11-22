@@ -120,7 +120,16 @@ class AudioRecorder : PluginRegistry.RequestPermissionsResultListener {
             recorder?.start()
 
             val intent = Intent(activity, AudioRecorderService::class.java)
-            intent.putExtra("ACTIVITY_NAME", "${activity.packageName}.${activity.localClassName}")
+            Log.e("ONGGO", "AAA ${activity.packageName}")
+            Log.e("ONGGO", "BBB ${activity.localClassName}")
+            var className = activity.localClassName
+            className = className.split(".").last()
+            Log.e("ONGGO", "CCC $className")
+            if (activity.localClassName.startsWith("com.")) {
+                intent.putExtra("ACTIVITY_NAME", "${activity.localClassName}")
+            } else {
+                intent.putExtra("ACTIVITY_NAME", "${activity.packageName}.${activity.localClassName}")
+            }
             activity.startService(intent)
             result.success(true)
         } catch (e: IllegalStateException) {

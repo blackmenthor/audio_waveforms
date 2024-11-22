@@ -56,6 +56,7 @@ class AudioWaveformsPlugin : FlutterPlugin, MethodCallHandler, ActivityAware {
                 checkPathAndInitialiseRecorder(result, encoder, outputFormat, sampleRate, bitRate)
             }
             Constants.startRecording -> {
+                Log.e("ONGGO", "START RECORDING")
                 val useLegacyNormalization =
                     (call.argument(Constants.useLegacyNormalization) as Boolean?) ?: false
                 audioRecorder.startRecorder(result, recorder, useLegacyNormalization, activity)

@@ -52,6 +52,16 @@ public class AudioRecorder: NSObject, AVAudioRecorderDelegate{
             audioRecorder?.delegate = self
             audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            var content = UNMutableNotificationContent()
+             content.title = "Message1"
+                     content.subtitle = "subtitle"
+                     content.body = "body"
+                     content.sound = UNNotificationSound.default
+            var request = UNNotificationRequest(identifier: UUID().uuidString , content: content, trigger: trigger)
+            UNUserNotificationCenter.current().add(request)
+            
             result(true)
         } catch {
             result(FlutterError(code: Constants.audioWaveforms, message: "Failed to start recording", details: error.localizedDescription))

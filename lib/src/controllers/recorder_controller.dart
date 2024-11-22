@@ -204,9 +204,10 @@ class RecorderController extends ChangeNotifier {
   }) async {
     if (!_recorderState.isRecording) {
       await checkPermission();
-      print('[ONGGO] TEST!');
 
-      checkNotifPermission();
+      if (Platform.isAndroid) {
+        checkNotifPermission();
+      }
       if (_hasPermission) {
         if (Platform.isAndroid && _recorderState.isStopped) {
           await _initRecorder(
